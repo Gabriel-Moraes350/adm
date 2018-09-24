@@ -31,7 +31,7 @@ class UserServices
             try{
                 if($user = User::create($userObject->getAttributes()))
                 {
-                    $user->roles()->sync($roles);
+                    $user->syncRoles($roles);
                     return true;
                 }
             }catch(\Exception $e){}
@@ -43,7 +43,7 @@ class UserServices
             {
                 if(!empty($user) && $user->update($userObject->getAttributes()))
                 {
-                    $user->roles()->sync($roles);
+                    $user->syncRoles($roles);
                     return true;
                 }
             }catch(\Exception $e){}

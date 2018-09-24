@@ -8,20 +8,19 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Services\RoleServices;
 use App\Services\User\UserAuthServices;
 use Illuminate\Support\Facades\Input;
 
-class RoleController extends AdminBaseController
+class ArticlesController extends AdminBaseController
 {
-    protected $className = 'Spatie\Permission\Models\Role';
-    protected $objectName = 'Acesso';
-    protected $routeName = 'adm.role';
+    protected $className = 'Article';
+    protected $objectName = 'Artigos';
+    protected $routeName = 'adm.article';
     protected $fields =
         [
             'id' => ['type' => 'readonly', 'description' => 'Id'],
             'name' => ['type' => 'text', 'description' => 'Nome'],
-            'permissions' => ['type' => 'Spatie\Permission\Models\Permission', 'description' => 'Permissões', 'checkbox' => true]
+            'description' => ['type' => 'text', 'description' => 'Descricão', 'textarea' => true],
         ];
 
     protected $customIndex =
@@ -43,29 +42,6 @@ class RoleController extends AdminBaseController
                     'id' => 'Id'
                 ]
         ];
-
-
-    protected function store()
-    {
-        return $this->storeOrUpdateRole();
-    }
-
-    protected function update($id)
-    {
-        return $this->storeOrUpdateRole($id);
-    }
-
-    private function storeOrUpdateRole($id = null)
-    {
-        $input = Input::all();
-        $roleServices = new RoleServices();
-        if($roleServices->makeRoleById($input, $id))
-        {
-            return parent::redirectWithSuccess();
-        }
-
-        return parent::redirectWithError();
-    }
 
 
 }

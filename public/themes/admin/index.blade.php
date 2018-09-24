@@ -31,6 +31,7 @@
         </div>
         <div class="col-6">
             @if(!empty($index['actions']['create']))
+
                 <a role="button" class="btn btn-primary float-right" href="{{URL::route($routeName . '.create')}}">Criar novo</a>
             @endif
         </div>

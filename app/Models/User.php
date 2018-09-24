@@ -8,6 +8,7 @@
 namespace App\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * Class User
@@ -26,6 +27,7 @@ class User extends Authenticatable
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 	protected $table = 'user';
     use Notifiable;
+    use HasRoles;
 	public $timestamps = false;
 
 	protected $hidden = [
@@ -38,15 +40,6 @@ class User extends Authenticatable
 		'password'
 	];
 
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id');
-    }
-
-	public function getRolesArray() : array
-    {
-        return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id')->pluck('roles.id')->toArray();
-    }
 
     public function setPasswordAttribute($value)
     {

@@ -9,7 +9,11 @@
             {!! Form::label($key, $val['description'], ['class' => 'mt-2']) !!}
         @endif
         @if($val['type'] == 'text')
-            {!! Form::text($key, $val['default'],['required' => $required, 'class' => 'form-control ' . $class]) !!}
+            @if(empty($val['textarea']))
+                {!! Form::text($key, $val['default'],['required' => $required, 'class' => 'form-control ' . $class]) !!}
+            @else
+                {!! Form::textarea($key, $val['default'],['required' => $required, 'class' => 'form-control textarea' . $class, 'id' => 'textarea']) !!}
+            @endif
         @elseif($val['type'] == 'password')
 
             {!! Form::password($key,['required' => $required, 'class' => 'form-control ' . $class]) !!}
@@ -25,10 +29,10 @@
         @elseif($val['type'] == 'checkbox')
             <div class="form-group">
             @foreach($val['data'] as $k => $value)
-                <div class="form-row">
+                <div class="form-check form-check-inline">
                     @php($checkIds = $val['default']->pluck('id')->toArray())
-                    {!! Form::checkbox($key .'[]', $k, \in_array($k, $checkIds), ['required' => $required, 'class' => 'mx-1 '. $class]) !!}
-                    {!! Form::label($key, $value) !!}
+                    {!! Form::checkbox($key .'[]', $k, \in_array($k, $checkIds), ['required' => $required, 'class' => 'mx-1 form-check-input'. $class]) !!}
+                    {!! Form::label($key, $value, ['class' => 'form-check-label']) !!}
                 </div>
             @endforeach
             </div>
@@ -45,3 +49,8 @@
     {!! Form::close() !!}
 
 @endsection
+@push('page-links')
+@endpush
+@push('page-script')
+
+@endpush
