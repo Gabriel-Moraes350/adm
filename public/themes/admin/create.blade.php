@@ -10,11 +10,7 @@
         {!! Form::label($key, $val['description'], ['class' => 'mt-2']) !!}
         @endif
         @if($val['type'] == 'text')
-            @if(empty($val['textarea']))
-                {!! Form::text($key, null,['required' => $required, 'class' => 'form-control ' . $class]) !!}
-            @else
-                {!! Form::textarea($key, null,['required' => $required, 'class' => 'form-control ' . $class]) !!}
-            @endif
+            {!! Form::text($key, null,['required' => true, 'class' => 'form-control']) !!}
         @elseif($val['type'] == 'password')
 
             {!! Form::password($key,['required' => true, 'class' => 'form-control']) !!}
@@ -25,9 +21,9 @@
         @elseif($val['type'] == 'checkbox')
             <div class="form-group">
                 @foreach($val['data'] as $k => $value)
-                    <div class="form-check form-check-inline">
-                        {!! Form::checkbox($key .'[]', $k, null, ['required' => $required, 'class' => 'mx-1 form-check-input'. $class]) !!}
-                        {!! Form::label($key, $value, ['class' => 'form-check-label']) !!}
+                    <div class="form-row">
+                        {!! Form::checkbox($key . '[]', $k, null, ['required' => $required, 'class' => 'mx-1 '. $class]) !!}
+                        {!! Form::label($key, $value) !!}
                     </div>
                 @endforeach
             </div>

@@ -25,31 +25,16 @@ class AdminBaseController extends DefaultController
     protected $customIndex = [];
     protected $response;
 
-    private $call_class;
-
     const NAMESPACE_MODELS = 'App\Models\\';
-    const ADMIN_MIDDLEWARE = 'admin';
     public function __construct()
     {
-        $this->middleware('checkRoles:'.self::ADMIN_MIDDLEWARE)->except(['loginAdm', 'logout']);
+        $this->middleware('checkRoles',[Role::ROLE_ADMIN]);
         $this->data['objectName'] = $this->objectName;
         $this->data['routeName'] = $this->routeName;
         $this->data['fields'] = $this->fields;
-        $this->call_class = \strpos($this->className, '\\') !== false ? $this->className : self::NAMESPACE_MODELS . $this->className;
         $this->response = new DefaultResponseController();
     }
 
-
-    public function getClassName()
-    {
-        return $this->className;
-    }
-
-
-    public function getRoleOwner()
-    {
-        return false;
-    }
 
     public function default()
     {
@@ -60,8 +45,7 @@ class AdminBaseController extends DefaultController
     {
         $this->data['index'] = $this->customIndex;
         $input = Input::all();
-
-        $objects  = \call_user_func_array( $this->call_class . '::orderBy',['id', 'desc']);
+        $objects  = \call_user_func_array( self::NAMESPACE_MODELS . $this->className . '::orderBy',['id', 'desc']);
         if(!empty($input['filter']) && !empty($input['find']))
         {
             if(\in_array($input['filter'],['name', 'email']))
@@ -82,7 +66,7 @@ class AdminBaseController extends DefaultController
     {
         if(!isset($this->data['object']))
         {
-            $object = \call_user_func_array([$this->call_class, 'find'], [$id]);
+            $object = \call_user_func_array([self::NAMESPACE_MODELS . $this->className, 'find'], [$id]);
             $this->makeTypeFields($object);
 
         }
@@ -102,7 +86,7 @@ class AdminBaseController extends DefaultController
         $input = Input::all();
         $dataToSave = [];
         try{
-            $object = \call_user_func_array([$this->call_class, 'find'], [$id]);
+            $object = \call_user_func_array([self::NAMESPACE_MODELS . $this->className, 'find'], [$id]);
 
             foreach($this->fields as $field => $val)
             {
@@ -176,14 +160,14 @@ class AdminBaseController extends DefaultController
         if(!empty($input))
         {
             try{
-                if($object = \call_user_func_array($this->call_class . '::create',[$input]))
+                if($object = \call_user_func_array(self::NAMESPACE_MODELS . $this->className . '::create',[$input]))
                 {
-                    return $this->redirectWithSuccess();
+                    $this->redirectWithSuccess();
                 }
             }catch(\Exception $e){}
 
         }
-        return $this->response->redirectWithError();
+        $this->response->redirectWithError();
     }
 
     /**
@@ -196,8 +180,7 @@ class AdminBaseController extends DefaultController
     {
         foreach ($this->data['fields'] as $field => &$val) {
             if (!\in_array($val['type'], ['readonly', 'hidden', 'text', 'number', 'checkbox', 'email', 'password', 'select'])) {
-                $call_class = \strpos($val['type'], '\\') !== false ? $val['type'] : self::NAMESPACE_MODELS . $val['type'];
-                $objArray = \call_user_func_array([$call_class, 'get'], []);
+                $objArray = \call_user_func_array([self::NAMESPACE_MODELS . $val['type'], 'get'], []);
                 $objData = [];
                 if(empty($val['checkbox']))
                 {

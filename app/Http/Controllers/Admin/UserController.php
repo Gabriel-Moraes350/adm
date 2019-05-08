@@ -9,7 +9,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
-use App\Services\RoleServices;
 use App\Services\User\UserAuthServices;
 use App\Services\UserServices;
 use Illuminate\Support\Facades\Input;
@@ -25,7 +24,7 @@ class UserController extends AdminBaseController
           'name' => ['type' => 'text', 'description' => 'Nome'],
           'login' => ['type' => 'email', 'description' => 'Email', 'required' => true],
           'password' => ['type' => 'password', 'description' => 'Senha', ],
-            'roles' => ['type' => 'Spatie\Permission\Models\Role', 'description' => 'Níveis', 'checkbox' => true]
+            'roles' => ['type' => 'Role', 'description' => 'Níveis', 'checkbox' => true]
         ];
 
     protected $customIndex =
@@ -59,12 +58,7 @@ class UserController extends AdminBaseController
             $userServices = new UserAuthServices();
             if($userServices->auth(UserAuthServices::USER_AUTH_BY_DEFAULT, ['login' => $input['email'], 'password' => $input['password']]))
             {
-                if($userServices->checkRoles(\Auth::user()))
-                {
-                    return redirect()->route('adm.default');
-                }
-                \Auth::logout();
-                return redirect()->back()->withErrors( 'Acesso não permitido');
+                return redirect()->route('adm.default');
             }
             return redirect()->back()->withErrors( 'Senha ou usuário inválidos');
 
@@ -129,10 +123,5 @@ class UserController extends AdminBaseController
             }
         }
         return parent::redirectWithError();
-    }
-
-    public function getRoleOwner()
-    {
-        return [RoleServices::ROLE_ADMIN];
     }
 }

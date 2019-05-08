@@ -8,11 +8,6 @@
 
 namespace App\Services\User;
 
-use App\Models\User;
-use App\Services\RoleServices;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
-
 class UserAuthServices
 {
 
@@ -61,74 +56,29 @@ class UserAuthServices
                 return $user;
             }
         }
-
-        return false;
     }
 
 
-    public function checkRoles(User $user) : bool
+    public function checkRoles($userRoles,$roles)
     {
-        if($user->hasAnyRole(Role::all()))
+        if(\is_array($roles))
         {
-            return true;
-        }
-
-        return false;
-    }
-
-
-    public function hasPermissions(User $user, string $className) : bool
-    {
-        $className = $this->convertClassName($className);
-        $action = \Route::current()->getActionMethod();
-        if($user->hasRole(RoleServices::ROLE_SUPER_ADMIN))
-        {
-            return true;
-        }
-
-        $action = $this->mapAction($action);
-
-
-        try{
-
-            if(empty($className))
-                return true;
-            foreach($user->roles as $role)
+            foreach($roles as $role)
             {
-                if($role->hasPermissionTo($className .'-'.$action))
+                if(\in_array($role, $userRoles))
+                {
                     return true;
+                }
             }
-        }catch(\Exception $e){}
+        } else {
+            if(\in_array($roles,$userRoles))
+            {
+                return true;
+            }
 
+        }
 
         return false;
     }
 
-
-    private function convertClassName($className)
-    {
-        if(\strpos($className, '\\') !== false)
-        {
-            $className = \explode('\\', $className);
-            $explodeName = $className[\count($className) -1];
-            return \strtolower($explodeName);
-        }
-
-        return \strtolower($className);
-    }
-
-    private function mapAction($action)
-    {
-        switch($action)
-        {
-            case 'store':
-                return 'create';
-                break;
-            case 'update':
-                return 'edit';
-                break;
-            default:
-                return $action;
-        }
-    }
 }

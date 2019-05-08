@@ -7,27 +7,12 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav ml-auto">
             @if(Auth::check())
-                @php($isSuperAdmin = Auth::user()->hasRole('SuperAdmin'))
-                @php($user = Auth::user())
-                @if($user->can('article-index') || $isSuperAdmin)
-                    <li class="nav-item active mx-2">
-                        <a class="nav-link" href="{{URL::route('adm.article.index')}}">Artigos<span class="sr-only">(current)</span></a>
-                    </li>
-                @endif
-                @if($user->can('user-index') || $isSuperAdmin)
-
-                    <li class="nav-item active mx-2">
+                <li class="nav-item active mx-2">
                     <a class="nav-link" href="{{URL::route('adm.user.index')}}">Usuários<span class="sr-only">(current)</span></a>
                 </li>
-                @endif
-                    @hasrole('SuperAdmin')
                     <li class="nav-item active mx-2">
                         <a class="nav-link" href="{{URL::route('adm.role.index')}}">Níveis<span class="sr-only">(current)</span></a>
                     </li>
-                    <li class="nav-item active mx-2">
-                        <a class="nav-link" href="{{URL::route('adm.permission.index')}}">Permissões<span class="sr-only">(current)</span></a>
-                    </li>
-                    @endrole
                 <li class="nav-item active">
                     <a class="nav-link" href="{{URL::route('adm.logout')}}">Sair <span class="sr-only">(current)</span></a>
                 </li>
