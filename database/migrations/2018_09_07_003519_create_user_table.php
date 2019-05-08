@@ -13,7 +13,7 @@ class CreateUserTable extends Migration
      */
     public function up()
     {
-        $query = "CREATE TABLE `users` (
+        $query = "CREATE TABLE IF NOT EXISTS `user` (
 	`id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`name` VARCHAR(100) NOT NULL,
 	`login` VARCHAR(100) NOT NULL unique ,
@@ -26,6 +26,10 @@ class CreateUserTable extends Migration
 COLLATE='utf8_general_ci'
 ENGINE=InnoDB
 ";
+
+        DB::statement($query);
+
+        $query = "INSERT INTO user (id, name, login, password) values (1, 'teste', 'adm@gmail.com','". \Illuminate\Support\Facades\Hash::make('123123') ."')";
 
         DB::statement($query);
     }

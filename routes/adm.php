@@ -10,5 +10,8 @@ Route::group(['namespace' => 'Admin'],function(){
     Route::resource('user','UserController',['as' => 'adm']);
 
     Route::resource('role', 'RoleController', ['as' => 'adm']);
+
+    Route::resource('article', 'ArticlesController', ['as' => 'adm']);
+
 });
 
